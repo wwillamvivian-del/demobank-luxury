@@ -1,82 +1,90 @@
-<style>
-    /* ... (Keep your existing styles) ... */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heritage Vault | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: #050505; color: white; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
+        #receiptOverlay { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); align-items: center; justify-content: center; }
+        .receipt-card { background: white; color: #1a1a1a; width: 90%; max-width: 350px; padding: 30px; border-radius: 20px; text-align: center; font-family: monospace; }
+        .success-stamp { color: #10b981; border: 2px solid #10b981; display: inline-block; padding: 5px 15px; border-radius: 5px; transform: rotate(-5deg); font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body class="p-6">
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-gray-500 text-sm">Welcome back,</h2>
+                <h1 class="text-2xl font-bold italic">Vrime Elite Admin</h1>
+            </div>
+            <div class="h-12 w-12 rounded-full border-2 border-[#C5A059] flex items-center justify-center text-xs">VAULT</div>
+        </header>
 
-    /* Receipt Overlay */
-    #receiptOverlay {
-        display: none;
-        position: fixed;
-        z-index: 2000;
-        left: 0; top: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.9);
-        backdrop-filter: blur(10px);
-        align-items: center;
-        justify-content: center;
-    }
-    .receipt-card {
-        background: white;
-        color: #1a1a1a;
-        width: 90%;
-        max-width: 350px;
-        padding: 30px;
-        border-radius: 20px;
-        text-align: center;
-        font-family: 'Courier New', Courier, monospace; /* Classic Receipt Font */
-        box-shadow: 0 10px 40px rgba(197, 160, 89, 0.3);
-    }
-    .receipt-logo { font-family: 'Inter', sans-serif; font-weight: 800; color: #343c6a; margin-bottom: 10px; }
-    .receipt-line { border-top: 1px dashed #ccc; margin: 15px 0; }
-    .receipt-val { font-weight: bold; font-size: 1.2rem; margin: 5px 0; }
-    .success-stamp { color: var(--green); border: 2px solid var(--green); display: inline-block; padding: 5px 15px; border-radius: 5px; transform: rotate(-5deg); font-weight: bold; margin-top: 20px; }
-    .close-receipt { margin-top: 25px; background: #343c6a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; }
-</style>
-
-<div id="receiptOverlay">
-    <div class="receipt-card">
-        <div class="receipt-logo">BANKING MVP</div>
-        <p style="font-size: 0.8rem; color: #666;">Transaction Authorized</p>
-        <div class="receipt-line"></div>
-        <div style="text-align: left; font-size: 0.9rem;">
-            <p>TYPE: <span id="r-type" style="float:right"></span></p>
-            <p>BANK: <span id="r-bank" style="float:right"></span></p>
-            <p>REF: <span id="r-ref" style="float:right"></span></p>
-            <p>DATE: <span id="r-date" style="float:right"></span></p>
+        <div class="glass-card p-8 rounded-3xl mb-8">
+            <p class="text-gray-400 text-sm mb-2 uppercase tracking-widest">Total Asset Liquidity</p>
+            <h2 id="balance-txt" class="text-5xl font-light tracking-tighter text-[#C5A059]">$542,100.00</h2>
         </div>
-        <div class="receipt-line"></div>
-        <p>TOTAL AMOUNT</p>
-        <div class="receipt-val" id="r-amount"></div>
-        <div class="success-stamp">APPROVED</div>
-        <button class="close-receipt" onclick="closeReceipt()">Done</button>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <button onclick="showAction('transfer')" class="glass-card p-6 rounded-2xl hover:bg-[#C5A059] hover:text-black transition-all">Transfer</button>
+            <button onclick="showAction('withdraw')" class="glass-card p-6 rounded-2xl hover:bg-white hover:text-black transition-all">Withdraw</button>
+        </div>
+
+        <div class="glass-card p-6 rounded-3xl">
+            <canvas id="growthChart"></canvas>
+        </div>
     </div>
-</div>
 
-<script>
-    // ... (Keep your existing openModal and closeModal functions) ...
+    <div id="receiptOverlay">
+        <div class="receipt-card">
+            <h3 class="font-bold border-b pb-2 mb-4 text-black">VRIME HERITAGE RECEIPT</h3>
+            <div class="text-left text-sm space-y-2">
+                <p>TYPE: <span id="r-type" class="float-right"></span></p>
+                <p>DATE: <span id="r-date" class="float-right"></span></p>
+                <p>REF: <span id="r-ref" class="float-right text-xs"></span></p>
+            </div>
+            <div class="my-4 border-t border-dashed border-gray-300"></div>
+            <p class="text-xs text-gray-500">AMOUNT AUTHORIZED</p>
+            <p class="text-2xl font-bold" id="r-amount"></p>
+            <div class="success-stamp">APPROVED</div>
+            <button onclick="location.reload()" class="mt-6 w-full bg-black text-white p-3 rounded-lg text-sm">Return to Vault</button>
+        </div>
+    </div>
 
-    function executeAction() {
-        const amt = document.getElementById('amountInput').value;
-        const bank = document.getElementById('targetBank').value;
-        
-        if(!amt || amt <= 0) return alert("Please enter a valid amount");
+    <script>
+        // Chart Logic
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                datasets: [{
+                    label: 'Asset Growth',
+                    data: [400000, 450000, 510000, 542100],
+                    borderColor: '#C5A059',
+                    tension: 0.4
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
 
-        // Update Balance
-        let balanceEl = document.getElementById('balance-txt');
-        let currentBalance = 542100 - parseFloat(amt);
-        balanceEl.innerText = "$" + currentBalance.toLocaleString();
+        function showAction(type) {
+            const amt = prompt("Enter amount to " + type + ":");
+            if(amt && !isNaN(amt)) {
+                document.getElementById('r-type').innerText = type.toUpperCase();
+                document.getElementById('r-date').innerText = new Date().toLocaleDateString();
+                document.getElementById('r-ref').innerText = Math.random().toString(36).substr(2, 9).toUpperCase();
+                document.getElementById('r-amount').innerText = "$" + parseFloat(amt).toLocaleString();
+                document.getElementById('receiptOverlay').style.display = 'flex';
+            }
+        }
+    </script>
+</body>
+</html>
 
-        // Prepare Receipt Data
-        document.getElementById('r-type').innerText = currentMode.toUpperCase();
-        document.getElementById('r-bank').innerText = bank;
-        document.getElementById('r-amount').innerText = "-$" + parseFloat(amt).toLocaleString();
-        document.getElementById('r-ref').innerText = Math.floor(Math.random() * 1000000000);
-        document.getElementById('r-date').innerText = new Date().toLocaleDateString();
 
-        // Show Receipt
-        document.getElementById('actionModal').style.display = 'none';
-        document.getElementById('receiptOverlay').style.display = 'flex';
-    }
 
-    function closeReceipt() {
-        document.getElementById('receiptOverlay').style.display = 'none';
-        // Optional: Refresh history list here
-    }
-</script>
