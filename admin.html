@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>DemoBank - Admin Portal</title><style>
+    body { font-family: system-ui; background: #f0f2f5; margin: 0; padding: 20px; }
+    .card { background: white; max-width: 800px; margin: 40px auto; padding: 2rem; border-radius: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    button { background: #0a2540; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+</style></head>
+<body>
+<div class="card">
+    <h2>Admin Portal (Demo)</h2>
+    <p>All registered users (mock data)</p>
+    <table id="userTable"><thead><tr><th>Username</th><th>Role</th></tr></thead><tbody></tbody></table>
+    <button id="logoutBtn">Log out</button>
+</div>
+<script>
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user || user.role !== 'admin') window.location.href = 'index.html';
+
+    const users = JSON.parse(localStorage.getItem('demobank_users')) || [];
+    const tbody = document.querySelector('#userTable tbody');
+    users.forEach(u => {
+        const row = tbody.insertRow();
+        row.insertCell(0).innerText = u.username;
+        row.insertCell(1).innerText = u.role;
+    });
+
+    document.getElementById('logoutBtn').onclick = () => { localStorage.removeItem('currentUser'); window.location.href = 'index.html'; };
+</script>
+</body>
+</html>
+let users = JSON.parse(localStorage.getItem('demobank_users')) || [];
+users.push({ username: "admin", password: "admin123", role: "admin" });
+localStorage.setItem('demobank_users', JSON.stringify(users));
+console.log("Admin added! Username: admin, Password: admin123");

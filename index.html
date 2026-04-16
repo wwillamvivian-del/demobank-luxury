@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking MVP | Private Vault</title>
+    <style>
+        :root { 
+            --bg-obsidian: #0a0c10; 
+            --card-charcoal: #161b22; 
+            --primary-gold: #c5a059; 
+            --gold-hover: #e2b86c;
+            --text-silver: #c9d1d9; 
+            --text-muted: #8b949e;
+            --border-dark: #30363d;
+        }
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            margin: 0; 
+            background: var(--bg-obsidian); 
+            color: var(--text-silver);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Navbar */
+        nav { 
+            background: rgba(10, 12, 16, 0.8); 
+            backdrop-filter: blur(10px);
+            padding: 20px 8%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border-dark);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; color: var(--primary-gold); letter-spacing: 1px; }
+        .logo-b { border: 2px solid var(--primary-gold); color: var(--primary-gold); padding: 2px 8px; border-radius: 4px; margin-right: 10px; font-size: 0.9rem; }
+        .nav-btn { background: transparent; color: var(--primary-gold); border: 1px solid var(--primary-gold); padding: 8px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .nav-btn:hover { background: var(--primary-gold); color: black; }
+
+        /* Hero Content Area */
+        .hero-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 8%;
+            gap: 60px;
+        }
+
+        .hero-text { max-width: 550px; }
+        .hero-text h1 { font-size: 3.5rem; font-weight: 900; line-height: 1; margin: 0; letter-spacing: -2px; color: white; }
+        .hero-text p { font-size: 1.2rem; color: var(--text-muted); margin: 25px 0; line-height: 1.6; }
+        .explore-btn { background: linear-gradient(135deg, #21262d, #0d1117); color: var(--primary-gold); border: 1px solid var(--border-dark); padding: 14px 28px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .explore-btn:hover { border-color: var(--primary-gold); }
+
+        /* Login Card */
+        .login-card {
+            background: var(--card-charcoal);
+            padding: 45px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid var(--border-dark);
+            position: relative;
+        }
+        .login-card::before {
+            content: "";
+            position: absolute;
+            top: -1px; left: -1px; right: -1px; bottom: -1px;
+            border-radius: 28px;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--border-dark), transparent, var(--primary-gold));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .login-card h2 { margin-top: 0; font-size: 1.6rem; text-align: center; margin-bottom: 30px; color: white; font-weight: 700; }
+        
+        input { 
+            width: 100%; 
+            padding: 16px; 
+            margin-bottom: 20px; 
+            border: 1px solid var(--border-dark); 
+            border-radius: 12px; 
+            background: #0d1117;
+            color: white;
+            font-size: 1rem;
+        }
+        input:focus { outline: none; border-color: var(--primary-gold); box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1); }
+
+        .auth-btn { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--primary-gold); 
+            color: #000; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .auth-btn:hover { background: var(--gold-hover); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(197, 160, 89, 0.2); }
+
+        .toggle-link { text-align: center; margin-top: 25px; font-size: 0.9rem; color: var(--text-muted); }
+        .toggle-link span { color: var(--primary-gold); cursor: pointer; font-weight: 600; text-decoration: underline; }
+
+        #msg { text-align: center; margin-top: 20px; font-weight: 600; font-size: 0.9rem; }
+
+        /* Responsive */
+        @media (max-width: 950px) {
+            .hero-section { flex-direction: column; text-align: center; padding: 60px 20px; }
+            .hero-text h1 { font-size: 2.8rem; }
+            .login-card { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo"><span class="logo-b">B</span> BANKING MVP</div>
+    <button class="nav-btn">Global Access</button>
+</nav>
+
+<div class="hero-section">
+    <div class="hero-text">
+        <h1>Digital Banking <br><span style="color: var(--primary-gold);">Reimagined</span></h1>
+        <p>Experience institutional-grade security and a seamless interface tailored for the elite digital economy.</p>
+        <button class="explore-btn">View Private Assets &rarr;</button>
+    </div>
+
+    <div class="login-card">
+        <h2 id="title">Secure Terminal</h2>
+        <input type="text" id="user" placeholder="Vault ID / Username">
+        <input type="password" id="pass" placeholder="Access Key / Password">
+        <button class="auth-btn" onclick="handleAuth()" id="btn">Authenticate</button>
+        
+        <div class="toggle-link" id="toggle-area">
+            New client? <span onclick="toggleMode()">Request Access</span>
+        </div>
+        <div id="msg"></div>
+    </div>
+</div>
+
+<script>
+    let isLoginMode = true;
+
+    function toggleMode() {
+        isLoginMode = !isLoginMode;
+        document.getElementById('title').innerText = isLoginMode ? "Secure Terminal" : "Register Account";
+        document.getElementById('btn').innerText = isLoginMode ? "Authenticate" : "Create Vault";
+        document.getElementById('toggle-area').innerHTML = isLoginMode ? 
+            'New client? <span onclick="toggleMode()">Request Access</span>' : 
+            'Already a member? <span onclick="toggleMode()">Sign In</span>';
+    }
+
+    function handleAuth() {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        const msg = document.getElementById('msg');
+        let users = JSON.parse(localStorage.getItem('demobank_users')) || [];
+
+        if (!u || !p) {
+            msg.style.color = "#f85149";
+            msg.innerText = "Access Denied: Missing Credentials";
+            return;
+        }
+
+        if (isLoginMode) {
+            const found = users.find(x => x.username === u && x.password === p);
+            if (found || (u === 'admin' && p === 'password')) {
+                msg.style.color = "#3fb950";
+                msg.innerText = "Identity Verified. decrypting...";
+                sessionStorage.setItem('loggedIn', 'true');
+                setTimeout(() => { window.location.href = "dashboard.html"; }, 1200);
+            } else {
+                msg.style.color = "#f85149";
+                msg.innerText = "Error: Invalid Access Key";
+            }
+        } else {
+            if (users.some(x => x.username === u)) {
+                msg.innerText = "Vault ID already assigned.";
+            } else {
+                users.push({username: u, password: p});
+                localStorage.setItem('demobank_users', JSON.stringify(users));
+                msg.style.color = "#3fb950";
+                msg.innerText = "Vault Created Successfully.";
+                setTimeout(() => { toggleMode(); }, 1500);
+            }
+        }
+    }
+</script>
+</body>
+</html>
