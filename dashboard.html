@@ -3,122 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banking MVP | Secure Portal</title>
+    <title>DemoBank | Private Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { 
-            --primary-bg: #e6ebf4; 
-            --accent-blue: #2d60ff; 
-            --card-white: #ffffff; 
-            --text-main: #232323; 
-            --text-dim: #718ebf;
-            --success: #3fb950;
-            --danger: #f85149;
-            --font-stack: 'Inter', -apple-system, sans-serif;
+            --bg-dark: #0f1217; 
+            --card-dark: #1c2128; 
+            --primary-gold: #c5a059; 
+            --text-main: #ffffff; 
+            --text-dim: #8b949e; 
+            --red: #f85149;
+            --green: #3fb950;
         }
         * { box-sizing: border-box; transition: all 0.2s ease; }
-        body { font-family: var(--font-stack); margin: 0; background: var(--primary-bg); color: var(--text-main); font-size: 14px; }
+        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-dark); color: var(--text-main); }
         
-        /* Top Navigation */
-        nav { background: var(--card-white); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e6f0; }
-        .logo { font-weight: 800; color: #343c6a; font-size: 1.3rem; }
-        .logo-b { background: #343c6a; color: white; padding: 5px 10px; border-radius: 6px; margin-right: 5px; }
-        .get-started { background: #18ba7a; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+        nav { background: var(--card-dark); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; }
+        .logo { font-weight: 800; color: var(--primary-gold); font-size: 1.4rem; }
 
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
 
-        /* Dashboard Title & Hero */
-        .title-hero { margin-bottom: 30px; }
-        .title-hero h1 { margin: 0; color: #343c6a; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; }
-        .title-hero p { color: var(--text-dim); margin: 10px 0; font-size: 1.1rem; line-height: 1.6; max-width: 600px; }
-        .explore-btn { background: #343c6a; color: white; border: none; padding: 14px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; margin-top: 15px; }
+        /* Wallet & Stats */
+        .wallet-card { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 1px solid #30363d; margin-bottom: 25px; }
+        .balance-val { font-size: 2.2rem; font-weight: 700; margin: 10px 0; }
 
-        /* Wallet Mockup Card */
-        .wallet-mockup { background: linear-gradient(135deg, #2d60ff, #1c45c3); padding: 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(45,96,255,0.2); margin-top: 40px; color: white; position: relative; }
-        .wallet-mockup-inner { display: grid; grid-template-columns: 1fr auto; gap: 30px; }
-        .balance-label { font-size: 0.85rem; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px; }
-        .balance-val { font-size: 3rem; font-weight: 700; margin: 15px 0; display: flex; align-items: center; gap: 10px; }
-        .eye-icon { cursor: pointer; font-size: 1.4rem; color: rgba(255,255,255,0.6); }
-        .acc-info { text-align: right; color: rgba(255,255,255,0.8); }
+        /* Feature Grid */
+        .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px; }
+        .feature-item { background: var(--card-dark); padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; border: 1px solid #30363d; }
+        .feature-item:hover { border-color: var(--primary-gold); background: #21262d; }
+        .feature-icon { font-size: 1.4rem; display: block; margin-bottom: 8px; }
 
-        /* Core Features */
-        .features-box { margin-top: 50px; }
-        .features-box h2 { font-size: 1.8rem; color: #343c6a; font-weight: 800; margin-bottom: 25px; }
-        .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .feature-card { background: var(--card-white); padding: 25px; border-radius: 16px; border: 1px solid #e0e6f0; }
-        .feature-icon-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .feature-icon { color: #18ba7a; font-size: 1.2rem; }
-        .feature-card h3 { margin: 0; color: #343c6a; font-size: 1.1rem; font-weight: 700; }
-        .feature-card p { margin: 10px 0 0; color: var(--text-dim); font-size: 0.85rem; }
+        /* Transaction Table */
+        .section-box { background: var(--card-dark); padding: 25px; border-radius: 20px; border: 1px solid #30363d; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+        th { text-align: left; color: var(--text-dim); padding: 10px; border-bottom: 1px solid #30363d; }
+        td { padding: 15px 10px; border-bottom: 1px solid #0d1117; }
+        .status-pill { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; background: rgba(63, 185, 80, 0.1); color: var(--green); }
 
-        @media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } .balance-val { font-size: 2.2rem; } }
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
+        .modal-content { background: var(--card-dark); margin: 10% auto; padding: 30px; border-radius: 24px; width: 90%; max-width: 400px; border: 1px solid #30363d; }
+        input, select { width: 100%; background: #0d1117; border: 1px solid #30363d; color: white; padding: 14px; margin: 10px 0; border-radius: 10px; }
+        .gold-btn { width: 100%; padding: 15px; background: var(--primary-gold); color: black; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; }
     </style>
-    <script>
-        if (sessionStorage.getItem('loggedIn') !== 'true') { window.location.href = "index.html"; }
-    </script>
 </head>
 <body>
 
 <nav>
-    <div class="logo"><span class="logo-b">B</span> Banking MVP</div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <button class="get-started" onclick="logout()">Logout</button>
-    </div>
+    <div class="logo">DEMOBANK GOLD</div>
+    <button onclick="sessionStorage.clear(); window.location.href='index.html'" class="feature-item" style="padding: 5px 15px; color: var(--red);">Logout</button>
 </nav>
 
 <div class="container">
-    <div class="title-hero">
-        <h1>Digital Banking <br>Reimagined</h1>
-        <p>A modern, secure, and accessible banking platform designed for the digital age.</p>
-        <button class="explore-btn">Explore Features &rarr;</button>
+    <div class="wallet-card">
+        <div style="color:var(--text-dim); font-size:0.8rem; letter-spacing: 1px;">TOTAL ASSETS (USD)</div>
+        <div class="balance-val" id="balance-txt">$542,100.00</div>
+        <div style="color: var(--green); font-size: 0.85rem;">● Account Active</div>
     </div>
 
-    <div class="wallet-mockup">
-        <div class="wallet-mockup-inner">
-            <div>
-                <div class="balance-label">Total Balance</div>
-                <div class="balance-val">
-                    <span id="balance-txt">$12,450.50</span>
-                    <span class="eye-icon" onclick="togglePrivacy()">👁️</span>
-                </div>
-            </div>
-            <div class="acc-info">
-                <p style="margin:0;">Niger Office</p>
-                <p style="font-weight: 600; margin: 5px 0;">0021****8829</p>
-            </div>
+    <div class="features-grid">
+        <div class="feature-item" onclick="openModal('transfer')">
+            <span class="feature-icon">📤</span><span style="font-size: 0.75rem;">Transfer</span>
         </div>
+        <div class="feature-item" onclick="openModal('withdraw')">
+            <span class="feature-icon">🏧</span><span style="font-size: 0.75rem;">Withdraw</span>
+        </div>
+        <div class="feature-item"><span class="feature-icon">💳</span><span style="font-size: 0.75rem;">Cards</span></div>
+        <div class="feature-item"><span class="feature-icon">⚙️</span><span style="font-size: 0.75rem;">Settings</span></div>
     </div>
 
-    <div class="features-box">
-        <h2>Core Features</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon-box">
-                    <span class="feature-icon">💳</span>
-                    <h3>Account Management</h3>
-                </div>
-                <p>Secure KYC and MFA protection.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon-box">
-                    <span class="feature-icon">🛡️</span>
-                    <h3>Security & Trust</h3>
-                </div>
-                <p>Institutional-grade protection.</p>
-            </div>
-        </div>
+    <div class="section-box">
+        <h3 style="margin:0;">Transaction History</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Bank / Entity</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-body">
+                <tr><td>Keystone Bank</td><td>Transfer</td><td style="color:var(--red);">-$1,200.00</td><td><span class="status-pill">Success</span></td></tr>
+                <tr><td>Chase Bank</td><td>Transfer</td><td style="color:var(--red);">-$5,000.00</td><td><span class="status-pill">Success</span></td></tr>
+                <tr><td>BOA Bank</td><td>Transfer</td><td style="color:var(--red);">-$2,450.00</td><td><span class="status-pill">Success</span></td></tr>
+                <tr><td>First American Bank</td><td>Withdrawal</td><td style="color:var(--red);">-$800.00</td><td><span class="status-pill">Success</span></td></tr>
+                <tr><td>First State Bank</td><td>Transfer</td><td style="color:var(--red);">-$1,100.00</td><td><span class="status-pill">Success</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="actionModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle" style="color:var(--primary-gold); margin-top:0;">Action</h2>
+        <select id="targetBank">
+            <option value="Keystone Bank">Keystone Bank</option>
+            <option value="Chase Bank">Chase Bank</option>
+            <option value="BOA Bank">BOA Bank</option>
+            <option value="First American Bank">First American Bank</option>
+            <option value="First State Bank">First State Bank</option>
+        </select>
+        <input type="number" id="amountInput" placeholder="Enter Amount ($)">
+        <button class="gold-btn" onclick="executeAction()">Confirm Transaction</button>
+        <p onclick="closeModal()" style="text-align:center; color:var(--text-dim); cursor:pointer; margin-top:15px;">Cancel</p>
     </div>
 </div>
 
 <script>
-    let isPrivate = false;
-    const realBalance = "$12,450.50";
+    let currentMode = '';
 
-    function togglePrivacy() {
-        isPrivate = !isPrivate;
-        document.getElementById('balance-txt').innerText = isPrivate ? "*******" : realBalance;
+    function openModal(mode) {
+        currentMode = mode;
+        document.getElementById('modalTitle').innerText = mode === 'transfer' ? 'Send Money' : 'Instant Withdrawal';
+        document.getElementById('actionModal').style.display = 'block';
     }
 
-    function logout() { sessionStorage.clear(); window.location.href = "index.html"; }
+    function closeModal() {
+        document.getElementById('actionModal').style.display = 'none';
+    }
+
+    function executeAction() {
+        const amt = document.getElementById('amountInput').value;
+        const bank = document.getElementById('targetBank').value;
+        
+        if(!amt || amt <= 0) return alert("Please enter a valid amount");
+
+        // Update History Table
+        const tbody = document.getElementById('transaction-body');
+        const row = `<tr><td>${bank}</td><td>${currentMode === 'transfer' ? 'Transfer' : 'Withdrawal'}</td><td style="color:var(--red);">-$${parseFloat(amt).toLocaleString()}</td><td><span class="status-pill">Success</span></td></tr>`;
+        tbody.insertAdjacentHTML('afterbegin', row);
+
+        // Update Balance
+        let balanceEl = document.getElementById('balance-txt');
+        let currentBalance = 542100 - parseFloat(amt);
+        balanceEl.innerText = "$" + currentBalance.toLocaleString();
+
+        alert("Transaction Authorized Successfully!");
+        closeModal();
+    }
 </script>
 </body>
 </html>
